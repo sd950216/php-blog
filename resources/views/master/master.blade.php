@@ -25,8 +25,16 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
     <div class="container">
-        <span class="navbar-brand" href="#"> user</span>
-        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        @guest
+        @if (Route::has('login'))
+        <span class="navbar-brand" href="/"> Guest</span>
+        @endif
+        @else
+            <span class="navbar-brand" href="/">{{ Auth::user()->name }}</span>
+        @endguest
+
+
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
             <i class="fas fa-bars"></i>
         </button>
@@ -38,19 +46,47 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{url('/posts')}}">Posts</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url('/login')}}">Log in</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url('/register')}}">Register</a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{url('/about')}}">About</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{url('/contact')}}">Contact</a>
                 </li>
+                <ul class="navbar-nav ms-auto">
+                    <!-- Authentication Links -->
+                    @guest
+                        @if (Route::has('login'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            </li>
+                        @endif
 
+                        @if (Route::has('register'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                            </li>
+                        @endif
+                    @else
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item"  href="/home">Dashboard</a>
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                    document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
+                    @endguest
+                </ul>
             </ul>
         </div>
     </div>
@@ -121,5 +157,10 @@
 
 <!-- Custom scripts for this template -->
 <script src="{{ asset('js/clean-blog.js') }}"></script>
+<script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
+<script>
+    CKEDITOR.replace( 'body' );
+</script>
+
 </body>
 </html>

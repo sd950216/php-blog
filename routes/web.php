@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,18 +13,25 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
 Route::get('/', 'App\Http\Controllers\HomeController@index' );
-Route::get('/login', 'App\Http\Controllers\HomeController@login' );
-Route::get('/register', 'App\Http\Controllers\HomeController@register' );
 Route::get('/about', 'App\Http\Controllers\HomeController@about' );
 Route::get('/contact', 'App\Http\Controllers\HomeController@contact' );
 Route::resource('posts', 'App\Http\Controllers\PostsController');
 Route::get('/post/{id}', 'App\Http\Controllers\PostsController@show')->name('posts.show');
-Route::get('/delete/{id}', 'App\Http\Controllers\PostsController@delete')->name('posts.delete');
-Route::get('/create', 'App\Http\Controllers\PostsController@create');
-Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
-Route::post('/register', 'Auth\RegisterController@register');
+Route::get('/delete/{id}', 'App\Http\Controllers\PostsController@delete')->middleware(['auth', 'verified'])->name('posts.delete');
+Route::get('/create', 'App\Http\Controllers\PostsController@create')->middleware(['auth', 'verified']);
+Route::get('/post/edit/{id}', 'App\Http\Controllers\PostsController@EditPost')->middleware(['auth', 'verified'])->name('posts.EditPost');
+Route::put('/post/{id}', 'App\Http\Controllers\PostsController@update')->middleware(['auth', 'verified'])->name('posts.update');
 
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

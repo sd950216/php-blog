@@ -25,7 +25,13 @@
 <body style="background-image: url('https://images.unsplash.com/photo-1538481199705-c710c4e965fc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1930&q=80');background-size: cover">
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
     <div class="container">
-        <span class="navbar-brand" href="#"> user</span>
+        @guest
+            @if (Route::has('login'))
+                <span class="navbar-brand" href="/"> Guest</span>
+            @endif
+        @else
+            <span class="navbar-brand" href="/">{{ Auth::user()->name }}</span>
+        @endguest
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             Menu
             <i class="fas fa-bars"></i>
@@ -38,19 +44,47 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{url('/posts')}}">Posts</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url('/login')}}">Log In</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url('/register')}}">Register</a>
-                </li>
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{url('/about')}}">About</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{url('/contact')}}">Contact</a>
                 </li>
+                <ul class="navbar-nav ms-auto">
+                    <!-- Authentication Links -->
+                    @guest
+                        @if (Route::has('login'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                            </li>
+                        @endif
 
+                        @if (Route::has('register'))
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                            </li>
+                        @endif
+                    @else
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item"  href="/home">Dashboard</a>
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                    document.getElementById('logout-form').submit();">
+                                    {{ __('Logout') }}
+                                </a>
+
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
+                            </div>
+                        </li>
+                    @endguest
+                </ul>
             </ul>
         </div>
     </div>

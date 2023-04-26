@@ -24,10 +24,10 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-10 mx-auto">
-                    {{ $post->body }}
+                    {!! $post->body !!}
                     <hr>
                     <div class="clearfix">
-                        <a class="btn btn-primary float-right" href="#">Edit Post</a>
+                        <a class="btn btn-primary float-right" href="{{url('/post/edit',$post->id)}}">Edit Post</a>
                     </div>
                 </div>
             </div>

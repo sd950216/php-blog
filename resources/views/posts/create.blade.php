@@ -25,8 +25,7 @@
                         <input type="text" class="form-control" name="title" />
                     </div>
                     <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" class="form-control" name="username" />
+                        <input hidden="" type="text" class="form-control" name="username" value="{{Auth::user()->name}}" />
                     </div>
                     <div class="form-group">
                         <label for="subtitle">Subtitle:</label>
